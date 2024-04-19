@@ -6,8 +6,8 @@ use std::{
     sync::Arc,
     time::{SystemTime, UNIX_EPOCH},
 };
-
 mod container_state;
+mod json_log_fomatter;
 
 use crate::{
     app_error::AppError,
@@ -696,7 +696,7 @@ impl AppData {
                         i = i.replace(&tz.to_string(), "");
                     }
                     let lines = if color {
-                        log_sanitizer::colorize_logs(&i)
+                        log_sanitizer::json_log(&i)
                     } else if raw {
                         log_sanitizer::raw(&i)
                     } else {

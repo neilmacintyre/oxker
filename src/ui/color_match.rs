@@ -1,10 +1,68 @@
 pub mod log_sanitizer {
 
+
     use cansi::{v3::categorise_text, Color as CansiColor, Intensity};
     use ratatui::{
         style::{Color, Modifier, Style},
         text::{Line, Span},
     };
+
+    use serde::{Deserialize, Serialize};
+    // {"message":"LOG MESSAGE CONTENTS","level":"WARNING","timestamp_iso":"2024-04-19T13:36:09.089736-04:00"}
+
+    // Color based on level, and prefix with stipped down time stamp\
+    #[derive(Serialize, Deserialize)]
+    struct JSONLogData<'a> {
+        message: &'a str,
+        level: &'a str,
+        timestamp_iso: &'a str,
+    }
+
+    pub fn json_formatter<'a>(log_json: &str)->Span<'a>{
+        let mut style = Style::default();
+           
+
+        let mut log_json =  log_json;
+
+        if let Some(index) = log_json.find('{') {
+            // Remove all characters before the '{' character
+            log_json = &log_json[index..];
+        } 
+
+        // Parse JSON into a serde_json::Value
+        let parsed_json:Result<JSONLogData, serde_json::Error> = serde_json::from_str(&log_json);
+        match parsed_json {
+            Ok(t) => {
+                let level = t.level;
+                match level{
+                    "WARNING"=>style=style.fg(color_ansi_to_tui(CansiColor::Red)),
+                    "DEBUG"=>style=style.fg(color_ansi_to_tui(CansiColor::White)),
+                    "INFO"=>style=style.fg(color_ansi_to_tui(CansiColor::Green)),
+                    _ =>style=style.fg(color_ansi_to_tui(CansiColor::White)),
+                };
+                Span::styled( t.message.to_string(), style)
+            },
+            Err(e) => {
+                // log_json.to_string()
+                Span::raw("MALFORMATED LOG".to_string())
+            }
+        }
+ 
+    }
+
+
+    // #[test]
+    //     /// Get mut container by id
+    // fn test_json_formatter() {
+    //     let formatted_log = json_formatter("{\"message\":\"LOG MESSAGE CONTENTS\",\"level\":\"WARNING\",\"timestamp_iso\":\"2024-04-19T13:36:09.089736-04:00\"}");
+    //     // println!("{formatted_log}");
+    //     assert_eq!(formatted_log, "LOG MESSAGE CONTENTS");
+    // }
+
+    pub fn json_log<'a>(input: &str) -> Vec<Line<'a>> {
+        vec![Line::from(json_formatter(input))]
+    }
+
 
     /// Attempt to colorize the given string to ratatui standards
     pub fn colorize_logs<'a>(input: &str) -> Vec<Line<'a>> {

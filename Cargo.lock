@@ -854,6 +854,8 @@ dependencies = [
  "futures-util",
  "parking_lot",
  "ratatui",
+ "serde",
+ "serde_json",
  "tokio",
  "tracing",
  "tracing-subscriber",

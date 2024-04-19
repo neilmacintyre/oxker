@@ -262,8 +262,7 @@ pub fn logs(
             .alignment(Alignment::Center);
         f.render_widget(paragraph, area);
     } else {
-        let logs = app_data.lock().get_logs();
-
+        let logs = app_data.lock().get_logs();      
         if logs.is_empty() {
             let paragraph = Paragraph::new("no logs found")
                 .block(block)
