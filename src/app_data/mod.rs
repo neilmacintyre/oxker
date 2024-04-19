@@ -696,6 +696,8 @@ impl AppData {
                         i = i.replace(&tz.to_string(), "");
                     }
                     let lines = if color {
+                        // Add filter for logs
+
                         log_sanitizer::json_log(&i)
                     } else if raw {
                         log_sanitizer::raw(&i)

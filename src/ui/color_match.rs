@@ -51,8 +51,7 @@ pub mod log_sanitizer {
                     Span::styled( t.message.to_string(), style)]
             },
             Err(e) => {
-                // log_json.to_string()
-                vec![Span::raw("MALFORMATED LOG".to_string())]
+                vec![Span::raw(log_json.to_string())]
             }
         }
  
