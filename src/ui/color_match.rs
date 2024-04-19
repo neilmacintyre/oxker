@@ -6,6 +6,7 @@ pub mod log_sanitizer {
         style::{Color, Modifier, Style},
         text::{Line, Span},
     };
+    use chrono::{DateTime, Utc, TimeZone, Datelike, Timelike, Local};
 
     use serde::{Deserialize, Serialize};
     // {"message":"LOG MESSAGE CONTENTS","level":"WARNING","timestamp_iso":"2024-04-19T13:36:09.089736-04:00"}
@@ -18,7 +19,7 @@ pub mod log_sanitizer {
         timestamp_iso: &'a str,
     }
 
-    pub fn json_formatter<'a>(log_json: &str)->Span<'a>{
+    pub fn json_formatter<'a>(log_json: &str)->Vec<Span<'a>>{
         let mut style = Style::default();
            
 
@@ -35,16 +36,23 @@ pub mod log_sanitizer {
             Ok(t) => {
                 let level = t.level;
                 match level{
-                    "WARNING"=>style=style.fg(color_ansi_to_tui(CansiColor::Red)),
-                    "DEBUG"=>style=style.fg(color_ansi_to_tui(CansiColor::White)),
+                    "WARNING"=>style=style.fg(color_ansi_to_tui(CansiColor::Yellow)),
+                    "ERROR"=>style=style.fg(color_ansi_to_tui(CansiColor::Red)),
                     "INFO"=>style=style.fg(color_ansi_to_tui(CansiColor::Green)),
                     _ =>style=style.fg(color_ansi_to_tui(CansiColor::White)),
                 };
-                Span::styled( t.message.to_string(), style)
+
+                let timestamp =t.timestamp_iso;
+                let dt = DateTime::parse_from_rfc3339(timestamp).unwrap();
+                let local_dt: DateTime<Local> = DateTime::from(dt);
+
+                vec![Span::styled(  local_dt.format("%H:%M:%S%.3f").to_string(),  Style::default().fg(color_ansi_to_tui(CansiColor::White))),
+                    Span::styled( "  ".to_string(),  Style::default().fg(color_ansi_to_tui(CansiColor::White))),
+                    Span::styled( t.message.to_string(), style)]
             },
             Err(e) => {
                 // log_json.to_string()
-                Span::raw("MALFORMATED LOG".to_string())
+                vec![Span::raw("MALFORMATED LOG".to_string())]
             }
         }
  
