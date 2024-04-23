@@ -287,9 +287,10 @@ fn draw_frame(f: &mut Frame, app_data: &Arc<Mutex<AppData>>, gui_state: &Arc<Mut
         .split(upper_main[0]);
 
     let lower_split = if fd.has_containers {
-        vec![Constraint::Percentage(70), Constraint::Percentage(30)]
+        // Logs, log query and charts
+        vec![Constraint::Percentage(70), Constraint::Percentage(10), Constraint::Percentage(20)]
     } else {
-        vec![Constraint::Percentage(100)]
+        vec![Constraint::Percentage(90),  Constraint::Percentage(10),]
     };
 
     // Split into 2, logs, and optional charts
@@ -301,6 +302,9 @@ fn draw_frame(f: &mut Frame, app_data: &Arc<Mutex<AppData>>, gui_state: &Arc<Mut
     draw_blocks::containers(app_data, top_panel[0], f, &fd, gui_state);
 
     draw_blocks::logs(app_data, lower_main[0], f, &fd, gui_state);
+
+    // TODO NEIL
+    draw_blocks::logs_query_input(app_data, lower_main[1], f, &fd, gui_state);
 
     draw_blocks::heading_bar(whole_layout[0], f, &fd, gui_state);
 
@@ -328,7 +332,7 @@ fn draw_frame(f: &mut Frame, app_data: &Arc<Mutex<AppData>>, gui_state: &Arc<Mut
         let lower = Layout::default()
             .direction(Direction::Horizontal)
             .constraints([Constraint::Min(1), Constraint::Max(ports_len)])
-            .split(lower_main[1]);
+            .split(lower_main[2]);
 
         draw_blocks::chart(f, lower[0], app_data);
         draw_blocks::ports(f, lower[1], app_data, max_lens);

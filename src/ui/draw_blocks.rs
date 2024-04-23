@@ -19,6 +19,8 @@ use crate::{
     app_error::AppError,
 };
 
+use tui_textarea::TextArea;
+use crossterm::event::{read, Event, KeyCode};
 use super::{
     gui_state::{BoxLocation, DeleteButton, Region},
     FrameData,
@@ -89,6 +91,9 @@ fn generate_block<'a>(
         SelectablePanel::Logs => {
             format!("{}{}", panel.title(), app_data.lock().get_log_title())
         }
+        SelectablePanel::LogQueryFilter => {
+            format!("{}{}", panel.title(), app_data.lock().get_log_title())
+        }
         SelectablePanel::Commands => String::new(),
     };
     if !title.is_empty() {
@@ -105,6 +110,7 @@ fn generate_block<'a>(
 }
 
 /// Draw the command panel
+/// Example
 pub fn commands(
     app_data: &Arc<Mutex<AppData>>,
     area: Rect,
@@ -262,7 +268,7 @@ pub fn logs(
             .alignment(Alignment::Center);
         f.render_widget(paragraph, area);
     } else {
-        let logs = app_data.lock().get_logs();      
+        let logs = app_data.lock().get_logs();   // get logs should be passed in a partialled filter callable with the inputed filter query   
         if logs.is_empty() {
             let paragraph = Paragraph::new("no logs found")
                 .block(block)
@@ -279,6 +285,47 @@ pub fn logs(
             }
         }
     }
+}
+
+/// Draw the logs_query_input panel
+pub fn logs_query_input(
+    app_data: &Arc<Mutex<AppData>>,
+    area: Rect,
+    f: &mut Frame,
+    fd: &FrameData,
+    gui_state: &Arc<Mutex<GuiState>>,
+) {
+    let block = generate_block(app_data, area, fd, gui_state, SelectablePanel::LogQueryFilter);
+ 
+    let mut textarea = TextArea::default();
+    let widget = textarea.widget();
+    // Render the widget in terminal screen
+    f.render_widget(widget, area);
+
+
+    // if let Event::Key(key) = read()? {
+    //     // Your own key mapping to break the event loop
+    //     if key.code == KeyCode::Esc {
+    //         break;
+    //     }
+    //     // `TextArea::input` can directly handle key events from backends and update the editor state
+    //     textarea.input(key);
+    // }
+
+
+    // f.render_stateful_widget(items, area, log_state);
+
+
+    // let items = List::new(logs)
+    //     .block(block)
+    //     .highlight_symbol(RIGHT_ARROW)
+    //     .highlight_style(Style::default().add_modifier(Modifier::BOLD));
+    // // This should always return Some, as logs is not empty
+    // if let Some(log_state) = app_data.lock().get_log_state() {
+    //     f.render_stateful_widget(items, area, log_state);
+    // }
+
+    
 }
 
 // Display the ports in a formatted list

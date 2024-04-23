@@ -19,6 +19,7 @@ pub enum SelectablePanel {
     Containers,
     Commands,
     Logs,
+    LogQueryFilter
 }
 
 impl SelectablePanel {
@@ -26,6 +27,7 @@ impl SelectablePanel {
         match self {
             Self::Containers => "Containers",
             Self::Logs => "Logs",
+            Self::LogQueryFilter => "Filter Logs",
             Self::Commands => "",
         }
     }
@@ -33,7 +35,8 @@ impl SelectablePanel {
         match self {
             Self::Containers => Self::Commands,
             Self::Commands => Self::Logs,
-            Self::Logs => Self::Containers,
+            Self::Logs => Self::LogQueryFilter,
+            Self::LogQueryFilter => Self::Containers,
         }
     }
     pub const fn prev(self) -> Self {
@@ -41,6 +44,7 @@ impl SelectablePanel {
             Self::Containers => Self::Logs,
             Self::Commands => Self::Containers,
             Self::Logs => Self::Commands,
+            Self::LogQueryFilter => Self::Logs,
         }
     }
 }

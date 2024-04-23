@@ -338,6 +338,7 @@ impl InputHandler {
         match selected_panel {
             SelectablePanel::Containers => locked_data.containers_start(),
             SelectablePanel::Logs => locked_data.log_start(),
+            SelectablePanel::LogQueryFilter => {},
             SelectablePanel::Commands => locked_data.docker_controls_start(),
         }
     }
@@ -349,6 +350,7 @@ impl InputHandler {
         match selected_panel {
             SelectablePanel::Containers => locked_data.containers_end(),
             SelectablePanel::Logs => locked_data.log_end(),
+            SelectablePanel::LogQueryFilter => {},
             SelectablePanel::Commands => locked_data.docker_controls_end(),
         }
     }
@@ -482,6 +484,7 @@ impl InputHandler {
         match selected_panel {
             SelectablePanel::Containers => locked_data.containers_next(),
             SelectablePanel::Logs => locked_data.log_next(),
+            SelectablePanel::LogQueryFilter => {},
             SelectablePanel::Commands => locked_data.docker_controls_next(),
         };
     }
@@ -493,6 +496,7 @@ impl InputHandler {
         match selected_panel {
             SelectablePanel::Containers => locked_data.containers_previous(),
             SelectablePanel::Logs => locked_data.log_previous(),
+            SelectablePanel::LogQueryFilter => {},
             SelectablePanel::Commands => locked_data.docker_controls_previous(),
         }
     }
