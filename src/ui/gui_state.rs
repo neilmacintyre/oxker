@@ -1,5 +1,6 @@
 use parking_lot::Mutex;
 use ratatui::layout::{Constraint, Rect};
+use tui_textarea::TextArea;
 use std::{
     collections::{HashMap, HashSet},
     sync::Arc,
@@ -170,11 +171,12 @@ pub enum Status {
     Help,
     Init,
     Logs,
+    LogQueryFilter
 }
 
 /// Global gui_state, stored in an Arc<Mutex>
 #[derive(Debug, Default, Clone)]
-pub struct GuiState {
+pub struct GuiState<'a> {
     delete_container: Option<ContainerId>,
     delete_map: HashMap<DeleteButton, Rect>,
     heading_map: HashMap<Header, Rect>,
@@ -184,9 +186,10 @@ pub struct GuiState {
     selected_panel: SelectablePanel,
     status: HashSet<Status>,
     exec_mode: Option<ExecMode>,
+    textarea: TextArea<'a>,
     pub info_box_text: Option<(String, Instant)>,
 }
-impl GuiState {
+impl<'a> GuiState<'a> {
     /// Clear panels hash map, so on resize can fix the sizes for mouse clicks
     pub fn clear_area_map(&mut self) {
         self.panel_map.clear();

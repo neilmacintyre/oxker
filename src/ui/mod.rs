@@ -183,6 +183,8 @@ impl Ui {
                             .send(InputMessages::ButtonPress((key.code, key.modifiers)))
                             .await
                             .ok();
+                        // Somehow I need to get the text from here into the text area (to be displayed) and into the log_sanatizer (to filter the logs)
+ 
                     } else if let Event::Mouse(m) = event {
                         match m.kind {
                             event::MouseEventKind::Down(_)

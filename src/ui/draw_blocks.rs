@@ -20,7 +20,6 @@ use crate::{
 };
 
 use tui_textarea::TextArea;
-use crossterm::event::{read, Event, KeyCode};
 use super::{
     gui_state::{BoxLocation, DeleteButton, Region},
     FrameData,
@@ -287,6 +286,10 @@ pub fn logs(
     }
 }
 
+
+// textarea does two things firstly it keeps track of all the input state (moving cursor, delete, cp past, etc), secondly it is a widget.
+// we could 
+
 /// Draw the logs_query_input panel
 pub fn logs_query_input(
     app_data: &Arc<Mutex<AppData>>,
@@ -294,15 +297,38 @@ pub fn logs_query_input(
     f: &mut Frame,
     fd: &FrameData,
     gui_state: &Arc<Mutex<GuiState>>,
+    textarea: &TextArea,
 ) {
     let block = generate_block(app_data, area, fd, gui_state, SelectablePanel::LogQueryFilter);
  
-    let mut textarea = TextArea::default();
+    // let mut textarea = TextArea::default();
+    textarea.set_block(block);
+    
+    // if let Some(text_tuple) =  &gui_state.lock().info_box_text {
+    //     textarea.set_placeholder_text(text_tuple.0.to_string());
+    // };
+    
+    // we need to get the Input object into this ... 
+
+    // textarea.set_placeholder_text("PLACEHOLDER TEXT");
+    textarea.insert_str("hello, world\ngoodbye, world");
+
     let widget = textarea.widget();
     // Render the widget in terminal screen
     f.render_widget(widget, area);
 
-
+ 
+    //     Ok(key) => {
+    //         textarea.input(key);
+    //     }
+    //     Err(err) => {
+    //         // Handle the error
+    //         println!("Error reading key: {}", err);
+    //     }
+    // }
+   
+        // `TextArea::input` can directly handle key events from backends and update the editor state
+    // }
     // if let Event::Key(key) = read()? {
     //     // Your own key mapping to break the event loop
     //     if key.code == KeyCode::Esc {

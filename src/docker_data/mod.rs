@@ -56,19 +56,19 @@ impl Binate {
     }
 }
 
-pub struct DockerData {
+pub struct DockerData<'a> {
     app_data: Arc<Mutex<AppData>>,
     args: CliArgs,
     binate: Binate,
     docker: Arc<Docker>,
-    gui_state: Arc<Mutex<GuiState>>,
+    gui_state: Arc<Mutex<GuiState<'a>>>,
     is_running: Arc<AtomicBool>,
     init: Option<Arc<AtomicUsize>>,
     receiver: Receiver<DockerMessage>,
     spawns: Arc<Mutex<HashMap<SpawnId, JoinHandle<()>>>>,
 }
 
-impl DockerData {
+impl<'a> DockerData<'a> {
     /// Use docker stats to calculate current cpu usage
     #[allow(clippy::cast_precision_loss)]
     // TODO FIX: this can overflow

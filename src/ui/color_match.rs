@@ -50,7 +50,7 @@ pub mod log_sanitizer {
                     Span::styled( "  ".to_string(),  Style::default().fg(color_ansi_to_tui(CansiColor::White))),
                     Span::styled( t.message.to_string(), style)]
             },
-            Err(e) => {
+            Err(_e) => {
                 vec![Span::raw(log_json.to_string())]
             }
         }

@@ -367,8 +367,10 @@ impl InputHandler {
         let contains_error = contains(Status::Error);
         let contains_help = contains(Status::Help);
         let contains_exec = contains(Status::Exec);
+        let contains_log_query = contains(Status::LogQueryFilter);
 
-        if !contains_exec {
+
+        if !contains_exec && !contains_log_query {
             // Always just quit on Ctrl + c/C or q/Q
             let is_c = || key_code == KeyCode::Char('c') || key_code == KeyCode::Char('C');
             let is_q = || key_code == KeyCode::Char('q') || key_code == KeyCode::Char('Q');
@@ -429,6 +431,10 @@ impl InputHandler {
                     _ => (),
                 }
             }
+        }else if contains_log_query {
+            self.gui_state
+            .lock()
+            .set_info_box("NEIL NEIL NEIL");
         }
     }
 
